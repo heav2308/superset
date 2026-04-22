@@ -24,7 +24,7 @@ ARG PY_VER=3.11.14-slim-trixie
 ARG BUILDPLATFORM=${BUILDPLATFORM:-amd64}
 
 # Include translations in the final build
-ARG BUILD_TRANSLATIONS="false"
+ARG BUILD_TRANSLATIONS="true"
 
 ######################################################################
 # superset-node-ci used as a base for building frontend assets and CI
@@ -283,3 +283,14 @@ USER root
 RUN uv pip install .[duckdb]
 USER superset
 CMD ["/app/docker/entrypoints/docker-ci.sh"]
+
+######################################################################
+# Railway image - lean + postgres
+######################################################################
+FROM lean AS railway
+
+USER root
+RUN uv pip install .[postgres]
+USER superset
+
+CMD ["/app/docker/entrypoints/run-server.sh"]
